@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Rekap Setoran Tani</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container py-5">
+      <h2 class="mb-4">Rekap Setoran Tani per Bulan</h2>
+
+      <table class="table table-bordered table-striped">
+        try { const data = await setoran_tani.findAll(); // Struktur bulan const
+        bulanList = [ "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember", ]; //
+        Rekap per nama dan per bulan const rekap = {}; data.forEach((item) => {
+        const nama = item.nama.toUpperCase(); const bulanIndex =
+        moment(item.tanggal).month(); // 0 - 11 const bulan =
+        bulanList[bulanIndex]; const jenis = `${item.jumlah}
+        ${item.jenis_tani.toUpperCase()}`; if (!rekap[nama]) rekap[nama] = {};
+        if (!rekap[nama][bulan]) { rekap[nama][bulan] = jenis; } else {
+        rekap[nama][bulan] += " + " + jenis; } }); res.render("rekap-setoran", {
+        currentRoute: "rekap-setoran", bulanList, rekap, }); } catch (err) {
+        console.error("❌ Gagal memuat rekap:", err.message);
+        res.status(500).send("Terjadi kesalahan memuat rekap."); }
+      </table>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Setoran Tani</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .table-smaller td,
+      .table-smaller th {
+        padding: 0.3rem 0.4rem;
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('-partials/sidebar', { currentRoute: currentRoute }) %>
+
+    <div class="container mt-4">
+      <h1>Setoran Tani</h1>
+
+      <!-- Form Tambah Setoran -->
+      <form action="/setoran_tani" method="POST" class="row g-3">
+        <div class="col-md-2">
+          <label class="form-label">Nama</label>
+          <select name="nama" class="form-select" required>
+            <% namaList.forEach(nama => { %>
+            <option value="<%= nama %>"><%= nama %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Bulan</label>
+          <select name="bulan" class="form-select" required>
+            <% bulanList.forEach(bulan => { %>
+            <option value="<%= bulan %>"><%= bulan %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Jenis Tani</label>
+          <input type="text" name="jenis_tani" class="form-control" required />
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Jumlah</label>
+          <input type="number" name="jumlah" class="form-control" required />
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">Keterangan</label>
+          <input type="text" name="keterangan" class="form-control" />
+        </div>
+
+        <div class="col-md-1 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary">Tambah</button>
+        </div>
+      </form>
+
+      <hr />
+
+      <!-- Tabel Rekap -->
+      <div class="table-responsive">
+        <table
+          class="table table-bordered table-striped table-sm table-smaller mt-4"
+        >
+          <thead class="table-dark">
+            <tr>
+              <th>Nama</th>
+              <% bulanList.forEach(bulan => { %>
+              <th><%= bulan %></th>
+              <% }); %>
+            </tr>
+          </thead>
+          <tbody>
+            <% setoranList.forEach(item => { %>
+            <tr>
+              <td><%= item.nama.toUpperCase() %></td>
+              <% bulanList.forEach(bulan => { %>
+              <td><%= rekap[item.nama.toUpperCase()]?.[bulan] || "-" %></td>
+              <% }); %>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/setoran_tani.js"></script>
+  </body>
+</html>

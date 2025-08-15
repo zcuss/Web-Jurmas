@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Fix</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Menyesuaikan ukuran input form */
+    .form-control {
+      font-size: 0.85rem; /* Ukuran font lebih kecil */
+      padding: 5px; /* Mengurangi padding input */
+      width: 120px; /* Menentukan lebar input */
+    }
+
+    .table th, .table td {
+      font-size: 0.9rem;  /* Ukuran font lebih kecil pada tabel */
+      padding: 8px; /* Padding kecil pada tabel */
+    }
+
+    .btn {
+      font-size: 0.85rem; /* Ukuran font button lebih kecil */
+      padding: 8px 12px; /* Mengurangi padding button */
+    }
+
+    /* Menambahkan margin agar form lebih rapat */
+    .main-content {
+      margin-left: 200px;
+    }
+  </style>
+</head>
+<body>
+  <%- include('../-partials/sidebar', { currentRoute: currentRoute, user: user }) %>
+
+  <div class="main-content container mt-4">
+    <h1 class="mb-4 text-center text-success">📦 Stock Fix</h1>
+
+    <form action="/stock-fix" method="POST">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+          <thead class="table-success">
+            <tr>
+              <th>Nama Bahan</th>
+              <th>Stok Saat Ini</th>
+              <th>Ganti Stok</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% items.forEach(item => { %>
+              <% if (item.name.startsWith('skip')) { %> <!-- If item starts with 'skip', show a placeholder -->
+                <tr class="table-dark">
+                  <td colspan="3" class="text-center fw-bold"></td> <!-- You can add some text here, like "Item skipped" -->
+                </tr>
+              <% } else { %> <!-- Otherwise, show the regular row -->
+                <tr>
+                  <td><%= item.name %></td>
+                  <td><%= item.amount %></td> <!-- fallback ke 0 jika null -->
+                  <td>
+                    <input type="text" class="form-control" name="updatedStocks[<%= item.name %>]" 
+                           step="1" placeholder="<%= item.amount ?? 0 %>">
+                  </td>
+                </tr>
+              <% } %>
+            <% }) %>
+            
+          </tbody>
+        </table>
+      </div>
+
+      <div class="text-end">
+        <button type="submit" class="btn btn-primary">💾 Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Withdraw Barang</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    .item-cell {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .remove-btn {
+      margin-left: 10px;
+      color: red;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('../-partials/sidebar', { currentRoute: currentRoute }) %>
+    <div class="main-content container mt-4">
+      <h1 class="mb-4 text-center text-success">📦 Withdraw Barang</h1>
+
+      <!-- List Barang -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="itemSelect" class="form-label">Pilih Barang</label>
+          <select id="itemSelect" class="form-select" required>
+            <option value="" disabled selected>Pilih Barang</option>
+            <option value="makanan">Makanan</option>
+            <option value="korek">Korek</option>
+            <option value="tuak">Tuak</option>
+            <option value="cerutu">Cerutu</option>
+            <option value="radio">Radio</option>
+            <option value="micin">Micin</option>
+            <option value="jamur">Jamur</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="quantity" class="form-label">Jumlah</label>
+          <input type="number" id="quantity" class="form-control" min="1" required />
+        </div>
+        <div class="col-md-2 mb-3">
+          <label class="form-label d-block">&nbsp;</label>
+          <button onclick="addItem()" class="btn btn-primary w-100">
+            ➕ Tambah
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabel List Barang -->
+      <table class="table table-bordered mt-3">
+        <thead>
+          <tr>
+            <th>Nama Barang</th>
+            <th>Jumlah</th>
+          </tr>
+        </thead>
+        <tbody id="itemList"></tbody>
+      </table>
+
+      <!-- Penerima & Admin -->
+      <div class="mb-3">
+        <label for="withdrawBy" class="form-label">WD Siapa (Penerima)</label>
+        <input type="text" id="withdrawBy" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="admin" class="form-label">Pengurus (Admin)</label>
+        <select id="admin" class="form-select" required>
+          <option value="" disabled selected>Pilih Admin</option>
+          <option value="Babeh Jali">Babeh</option>
+          <option value="Naomi Lazovsky Haegen">Naomi</option>
+          <option value="KAY S HAWKINS">Kay</option>
+          <option value="Roy Suryajana">Roy</option>
+        </select>
+      </div>
+
+      <!-- Hidden Message ID Input -->
+      <input type="hidden" id="message_id" value="0" />
+
+      <div class="text-center mt-3">
+        <button onclick="submitWithdraw()" class="btn btn-success btn-lg w-100">
+          <i class="fas fa-cogs"></i> Withdraw Barang
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const itemList = document.getElementById("itemList");
+
+      function addItem() {
+        const item = document.getElementById("itemSelect").value;
+        const quantity = parseInt(document.getElementById("quantity").value);
+
+        if (!item || quantity < 1) {
+          alert("Pilih item dan masukkan jumlah yang valid!");
+          return;
+        }
+
+        // Cek apakah item sudah ada di list
+        const existingRow = Array.from(itemList.children).find(
+          (row) => row.dataset.item === item
+        );
+
+        if (existingRow) {
+          alert(
+            `Item "${item}" sudah ada di list. Hapus terlebih dahulu jika ingin mengubah.`
+          );
+          return;
+        }
+
+        // Buat row baru
+        const row = document.createElement("tr");
+        row.dataset.item = item;
+        row.innerHTML = `
+                <td>${item}</td>
+                <td class="item-cell">
+                    <span class="qty">${quantity}</span>
+                    <span class="remove-btn" onclick="removeItem(this)">❌</span>
+                </td>
+            `;
+        itemList.appendChild(row);
+
+        // Clear input setelah ditambahkan
+        document.getElementById("quantity").value = "";
+        document.getElementById("itemSelect").selectedIndex = 0;
+      }
+
+      function removeItem(button) {
+        button.closest("tr").remove();
+      }
+
+      async function submitWithdraw() {
+        const withdrawBy = document.getElementById("withdrawBy").value;
+        const admin = document.getElementById("admin").value;
+        const message_id = document.getElementById("message_id").value;
+
+        if (!withdrawBy || !admin) {
+          alert("Nama Penerima dan Admin tidak boleh kosong!");
+          return;
+        }
+
+        // Ambil semua barang dari tabel
+        const withdrawItems = Array.from(itemList.querySelectorAll("tr")).map(
+          (row) => {
+            const name = row.children[0].innerText;
+            const quantity = parseInt(row.querySelector(".qty").innerText);
+            return { name, quantity };
+          }
+        );
+
+        if (withdrawItems.length === 0) {
+          alert("Tambahkan minimal 1 barang!");
+          return;
+        }
+
+        const payload = {
+          withdrawItem: withdrawItems,
+          yang_wd: withdrawBy,
+          pengurus: admin,
+          message_id: message_id,
+        };
+
+        try {
+          const response = await fetch("/withdraw", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (response.ok) {
+            alert("Withdraw berhasil!");
+            window.location.reload();
+          } else {
+            alert("Terjadi kesalahan, cek stok atau coba lagi.");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      }
+    </script>
+</body>
+
+</html>

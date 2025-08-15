@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Restock - Dashboard Stock</title>
+  <style>
+    .separator {
+      border-top: 1px solid #000;
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    .price-estimation {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <%- include('../-partials/sidebar', { currentRoute: currentRoute }) %>
+
+    <div class="main-content container mt-4">
+      <h1 class="mb-4 text-center text-success">📦 Restock Bahan</h1>
+
+      <form action="/restock" method="POST">
+        <!-- Pengurus -->
+        <div class="mb-4">
+          <label for="pengurus" class="form-label">Pengurus</label>
+          <select class="form-control" id="pengurus" name="pengurus" required>
+            <option value="">-- Pilih Pengurus --</option>
+            <option value="Babeh">Babeh</option>
+            <option value="Naomi">Naomi</option>
+            <option value="Kay">Kay</option>
+            <option value="Roy">Roy</option>
+          </select>
+        </div>
+
+        <!-- Daftar item -->
+        <% items.forEach(item=> { %> <% if (item.name.startsWith('skip')) { %>
+            <div class="separator"></div>
+            <% } else { %>
+              <div class="mb-3">
+                <label class="form-label">
+                  <%= item.name %>
+                    <span class="text-muted">
+                      (IDP <%= (typeof item.price==='number' ? item.price : 0).toLocaleString('id-ID') %>/unit)
+                    </span>
+                </label>
+                <input type="number" class="form-control restock-input" name="restock[<%= item.name.toLowerCase() %>]"
+                  data-item-name="<%= item.name %>"
+                  data-price="<%= (typeof item.price === 'number' ? item.price : 0) %>" value="" min="0"
+                  oninput="calculatePrice(event)" />
+                <div class="price-estimation" id="price-<%= item.name.toLowerCase() %>">
+                  Estimasi Harga: IDP 0
+                </div>
+              </div>
+              <% } %>
+                <% }) %>
+
+                  <!-- Total estimasi -->
+                  <div class="price-estimation mt-4" id="total-estimation">
+                    Total Estimasi: IDP 0
+                  </div>
+
+                  <button type="submit" class="btn btn-primary mt-3">Tambah Stok</button>
+      </form>
+    </div>
+
+    <script>
+      let totalHargaMap = {};
+
+      function calculatePrice(event) {
+        const inputElement = event.target;
+        const itemName = inputElement.getAttribute("data-item-name");
+        const price = parseFloat(inputElement.getAttribute("data-price")) || 0;
+        const quantity = parseFloat(inputElement.value) || 0;
+
+        if (price <= 0) {
+          console.log(`Harga untuk ${itemName} tidak valid.`);
+          return;
+        }
+
+        const totalPrice = price * quantity;
+        totalHargaMap[itemName] = totalPrice;
+
+        const priceElement = document.getElementById(
+          "price-" + itemName.toLowerCase()
+        );
+        priceElement.textContent =
+          "Estimasi Harga: IDP " + totalPrice.toLocaleString("id-ID");
+
+        let total = 0;
+        for (let item in totalHargaMap) {
+          total += totalHargaMap[item];
+        }
+
+        const totalElem = document.getElementById("total-estimation");
+        totalElem.textContent =
+          "Total Estimasi: IDP " + total.toLocaleString("id-ID");
+      }
+    </script>
+</body>
+
+</html>

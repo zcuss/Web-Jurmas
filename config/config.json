@@ -1,0 +1,68 @@
+{
+  "withdrawalAmounts": {
+    "makanan": [
+      { "name": "Ayam", "amount": 320 },
+      { "name": "Daging", "amount": 200 },
+      { "name": "Buah Buahan", "amount": 200 },
+      { "name": "Ikan", "amount": 140 },
+      { "name": "Lemak", "amount": 140 },
+      { "name": "Akua", "amount": 100 },
+      { "name": "Susu", "amount": 100 },
+      { "name": "Cengkeh", "amount": 100 },
+      { "name": "Garam", "amount": 100 },
+      { "name": "Gula", "amount": 100 },
+      { "name": "Sambal", "amount": 80 },
+      { "name": "Teh Celup", "amount": 60 },
+      { "name": "Telur", "amount": 60 },
+      { "name": "Zat Kimia", "amount": 40 },
+      { "name": "Daun", "amount": 20 },
+      { "name": "Bambu", "amount": 20 },
+      { "name": "Beras", "amount": 20 }
+    ],
+    "radio": [{ "name": "Radio", "amount": 1 }],
+    "micin": [
+      { "name": "Olahan Micin", "amount": 1 },
+      { "name": "Susu", "amount": 7 }
+    ],
+
+    "cerutu": [
+      { "name": "Micin", "amount": 2 },
+      { "name": "Kayu", "amount": 5 },
+      { "name": "Daun", "amount": 5 },
+      { "name": "Buah buahan", "amount": 5 },
+      { "name": "Cengkeh", "amount": 10 },
+      { "name": "Tembakau", "amount": 10 },
+      { "name": "Kecubung", "amount": 2 }
+    ],
+    "tuak": [
+      { "name": "Bambu", "amount": 10 },
+      { "name": "Micin", "amount": 7 },
+      { "name": "Buah buahan", "amount": 10 },
+      { "name": "Beras", "amount": 3 },
+      { "name": "Sawit", "amount": 5 },
+      { "name": "Cengkeh", "amount": 5 },
+      { "name": "Botol", "amount": 10 },
+      { "name": "Kecubung", "amount": 7 }
+    ],
+    "korek": [
+      { "name": "Tembaga", "amount": 5 },
+      { "name": "Micin", "amount": 5 },
+      { "name": "Besi", "amount": 5 },
+      { "name": "Sawit", "amount": 10 },
+      { "name": "Kayu", "amount": 5 },
+      { "name": "Kecubung", "amount": 5 }
+    ],
+    "jamur": [
+      { "name": "Susu", "amount": 1 },
+      { "name": "Olahan Micin", "amount": 1 },
+      { "name": "Micin", "amount": 1 },
+      { "name": "Sawit", "amount": 20 },
+      { "name": "Akua", "amount": 1 },
+      { "name": "Daun", "amount": 15 },
+      { "name": "Kecubung", "amount": 2 },
+      { "name": "Zat Kimia", "amount": 1 },
+      { "name": "Akar", "amount": 20 },
+      { "name": "Tembakau", "amount": 10 }
+    ]
+  }
+}

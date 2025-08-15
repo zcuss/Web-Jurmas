@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Uang WD - Semua Admin</title>
+  <link rel="stylesheet" href="/css/uang.css" />
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <%- include('../-partials/sidebar', { currentRoute: currentRoute }) %>
+
+    <!-- Main Content -->
+    <div class="main-content p-4">
+      <div class="container">
+        <h1>📊 Uang WD</h1>
+
+        <% function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); } %>
+          <% const adminList=Object.keys(wdData); %>
+            <% if (adminList.length> 0) { %>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Babeh</th>
+                    <th>Naomi</th>
+                    <th>Kay</th>
+                    <th>Roy</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <% adminList.forEach(admin=> { %>
+                      <td>Rp <%= wdData[admin].toLocaleString() %>
+                      </td>
+                      <% }) %>
+                  </tr>
+
+                  <% if (user && user.role==='superadmin' ) { %>
+                    <tr>
+                      <% adminList.forEach(admin=> { %>
+                        <td>
+                          <button type="button" onclick="openModal('<%= admin.toLowerCase() %>')">
+                            💸 Setor Uang
+                          </button>
+                        </td>
+                        <% }) %>
+                    </tr>
+                    <% } %>
+                </tbody>
+              </table>
+              <% } else { %>
+                <p>Tidak ada data tersedia.</p>
+                <% } %>
+                  <% if (user && user.role==='superadmin' ) { %>
+                    <!-- Log Transaksi -->
+                    <div class="logs mt-4" style="max-width: 600px; margin-top: 2rem">
+                      <h3>📜 Log Transaksi</h3>
+                      <% if (logs && logs.length> 0) { %>
+                        <ul class="log-list">
+                          <% logs.forEach(log=> { %>
+                            <li class="log-item">
+                              <span class="log-date">
+                                <%= new Date(log.createdAt).toLocaleString('id-ID', { dateStyle: 'short' ,
+                                  timeStyle: 'short' }) %>
+                              </span>
+                              —
+                              <span class="log-pengurus">
+                                <%= log.pengurus ? capitalize(log.pengurus) : '—' %>
+                              </span>
+
+                              setor
+                              <span class="log-nominal">Rp <%= typeof log.nominal==='number' ?
+                                  log.nominal.toLocaleString() : '0' %>
+                              </span>
+                              ke
+                              <span class="log-tujuan">
+                                <%= log.tujuan ? capitalize(log.tujuan) : '—' %>
+                              </span>
+                            </li>
+                            <% }) %>
+                        </ul>
+                        <% } else { %>
+                          <p>Tidak ada log transaksi.</p>
+                          <% } %>
+                    </div>
+                    <% } %>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <h2>Setor Uang untuk <span id="modal-admin-name"></span></h2>
+        <form id="setorForm" method="POST">
+          <input type="number" name="jumlah" placeholder="Nominal setor" required min="1" />
+          <br />
+          <select name="penerima" required style="
+              margin-bottom: 20px;
+              padding: 10px;
+              width: 90%;
+              font-size: 16px;
+            ">
+            <option value="" disabled selected>Tujuan :</option>
+            <option value="babeh">Babeh</option>
+            <option value="naomi">Naomi</option>
+            <option value="kay">Kay</option>
+            <option value="roy">Roy</option>
+            <option value="rei">Rei (ke Uang Kas)</option>
+            <option value="proy">Proy</option>
+          </select>
+          <br />
+          <button type="submit">Setor</button>
+          <button type="button" onclick="closeModal()">Batal</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="/js/uang-wd.js"></script>
+</body>
+
+</html>

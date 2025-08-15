@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uang Gaji - Semua Admin</title>
+  <link rel="stylesheet" href="/css/uang.css" />
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <%- include('../-partials/sidebar', { currentRoute: currentRoute }) %>
+
+    <!-- Main Content -->
+    <div class="main-content p-4">
+      <div class="container">
+        <h1>💰 Uang Gaji</h1>
+
+        <!-- Tabel Data Gaji -->
+        <table>
+          <thead>
+            <tr>
+              <th>Babeh</th>
+              <th>Naomi</th>
+              <th>Kay</th>
+              <th>Roy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Rp <%= gajiData.Babeh.toLocaleString() %>
+              </td>
+              <td>Rp <%= gajiData.Naomi.toLocaleString() %>
+              </td>
+              <td>Rp <%= gajiData.Kay.toLocaleString() %>
+              </td>
+              <td>Rp <%= gajiData.Roy.toLocaleString() %>
+              </td>
+            </tr>
+            <% if (user && user.role==='superadmin' ) { %>
+              <tr>
+                <td>
+                  <button type="button" onclick="openModal('babeh')">
+                    💸 Ambil Gaji
+                  </button>
+                </td>
+                <td>
+                  <button type="button" onclick="openModal('naomi')">
+                    💸 Ambil Gaji
+                  </button>
+                </td>
+                <td>
+                  <button type="button" onclick="openModal('kay')">
+                    💸 Ambil Gaji
+                  </button>
+                </td>
+                <td>
+                  <button type="button" onclick="openModal('roy')">
+                    💸 Ambil Gaji
+                  </button>
+                </td>
+              </tr>
+              <% } %>
+          </tbody>
+        </table>
+        <% if (user && user.role==='superadmin' ) { %>
+          <!-- Log Transaksi Uang WD -->
+          <div class="logs mt-4" style="max-width: 600px; margin-top: 2rem">
+            <h3>📜 Log Transaksi</h3>
+            <% if (logs && logs.length> 0) { %>
+              <ul class="log-list">
+                <% logs.forEach(log=> { %>
+                  <li class="log-item">
+                    <span class="log-date">
+                      <%= new Date(log.createdAt).toLocaleString('id-ID', { dateStyle: 'short' , timeStyle: 'short' })
+                        %>
+                    </span>
+                    — <span class="log-pengurus">
+                      <%= log.pengurus %>
+                    </span> setor
+                    <span class="log-nominal">Rp <%= log.nominal.toLocaleString() %></span>
+                    ke
+                    <span class="log-tujuan">
+                      <%= log.tujuan %>
+                    </span>
+                  </li>
+                  <% }) %>
+              </ul>
+              <% } else { %>
+                <p>Tidak ada log transaksi.</p>
+                <% } %>
+          </div>
+          <% } %>
+      </div>
+    </div>
+
+    <!-- Modal Popup -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <h2>Ambil Uang Gaji <span id="modal-admin-name"></span></h2>
+        <form id="setorForm" method="POST">
+          <input type="number" name="jumlah" placeholder="Nominal Ambil" required min="1" style="
+              padding: 10px;
+              width: 90%;
+              font-size: 16px;
+              margin-bottom: 15px;
+            " />
+          <br />
+          <button type="submit">Ambil</button>
+          <button type="button" onclick="closeModal()">Batal</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Script Modal -->
+    <script src="js/uang-gaji.js"></script>
+</body>
+
+</html>

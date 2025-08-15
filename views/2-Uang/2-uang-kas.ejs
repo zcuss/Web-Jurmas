@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uang Kas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    table {
+      table-layout: auto;
+      width: 100%;
+    }
+
+    td,
+    th {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    /* Specific column widths */
+    th:nth-child(1),
+    td:nth-child(1) {
+      width: 5%;
+    }
+
+    /* ID */
+    th:nth-child(2),
+    td:nth-child(2) {
+      width: 10%;
+    }
+
+    /* Tanggal */
+    th:nth-child(3),
+    td:nth-child(3) {
+      width: 10%;
+    }
+
+    /* Withdraw / Deposit */
+    th:nth-child(4),
+    td:nth-child(4) {
+      width: 10%;
+    }
+
+    /* Pengurus */
+    th:nth-child(5),
+    td:nth-child(5) {
+      width: 15%;
+      word-wrap: break-word;
+    }
+
+    /* Pengurus Koperasi */
+    th:nth-child(6),
+    td:nth-child(6) {
+      width: 20%;
+      word-wrap: break-word;
+    }
+
+    /* Keterangan */
+    th:nth-child(7),
+    td:nth-child(7) {
+      width: 15%;
+    }
+
+    /* Uang Masuk */
+    th:nth-child(8),
+    td:nth-child(8) {
+      width: 15%;
+    }
+
+    /* Uang Keluar */
+    th:nth-child(9),
+    td:nth-child(9) {
+      width: 10%;
+    }
+
+    /* Aksi */
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+</head>
+
+<body>
+  <%- include('../-partials/sidebar', { currentRoute: currentRoute }) %>
+    <div class="container mt-4">
+      <% if (userRole==='admin' || userRole==='superadmin' ) { %>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="h3">📊 Uang Kas</h1>
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uangKasModal">
+            + Tambah Uang Kas
+          </button>
+        </div>
+
+        <!-- Modal for adding uang kas -->
+        <div class="modal fade" id="uangKasModal" tabindex="-1" aria-labelledby="uangKasModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="uangKasModalLabel">
+                  Tambah Uang Kas
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="uangKasForm" action="/update-kas" method="POST">
+                  <div class="mb-3">
+                    <label for="wd_depo" class="form-label">Withdraw / Deposit</label>
+                    <select class="form-control" id="wd_depo" name="wd_depo" required>
+                      <option value="Deposit">Deposit</option>
+                      <option value="Withdraw">Withdraw</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="pengurus" class="form-label">Pengurus</label>
+                    <select class="form-control" id="pengurus" name="pengurus" required>
+                      <option value="babeh">Babeh</option>
+                      <option value="naomi">Naomi</option>
+                      <option value="kay">Kay</option>
+                      <option value="roy">Roy</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="lokasi" class="form-label">Pengurus Koperasi</label>
+                    <input type="text" class="form-control" id="lokasi" name="lokasi" required />
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="keterangan" class="form-label">Keterangan</label>
+                    <input type="text" class="form-control" id="keterangan" name="keterangan" />
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="jumlah" class="form-label">Jumlah</label>
+                    <input type="number" class="form-control" id="jumlah" name="jumlah" min="1" required />
+                  </div>
+
+                  <input type="hidden" id="transactionId" name="transactionId" />
+
+                  <button type="submit" class="btn btn-primary w-100">
+                    Simpan Perubahan
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% } %>
+          <hr />
+
+          <div class="d-flex justify-content-between align-items-center">
+            <h2>Data Uang Kas</h2>
+            <h5>
+              Total Uang Kas:
+              <span class="badge bg-primary">Rp <%= totalKas ? totalKas.toLocaleString('id-ID') : '0' %></span>
+            </h5>
+          </div>
+
+          <!-- Uang Kas Table -->
+          <table class="table table-striped table-bordered mt-4">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Tanggal</th>
+                <th>Withdraw / Deposit</th>
+                <th>Pengurus</th>
+                <th>Pengurus Koperasi</th>
+                <th>Keterangan</th>
+                <th>Uang Masuk</th>
+                <th>Uang Keluar</th>
+                <% if (userRole==='admin' || userRole==='superadmin' ) { %>
+                  <!-- Kolom Aksi hanya untuk Admin -->
+                  <th>Aksi</th>
+                  <% } %>
+              </tr>
+            </thead>
+            <tbody>
+              <% uangKasData.forEach(transaction=> { %>
+                <tr>
+                  <td>
+                    <%= transaction.id %>
+                  </td>
+                  <td>
+                    <%= transaction.tanggal ? new Date(transaction.tanggal).toLocaleDateString('id-ID') : 'N/A' %>
+                  </td>
+
+                  <!-- Logika untuk menampilkan ikon sesuai jenis transaksi -->
+                  <td>
+                    <% if (transaction.wd_depo==='Withdraw' ) { %>
+                      <i class="bi bi-box-arrow-left text-danger"></i> Withdraw <% } else { %>
+                        <i class="bi bi-box-arrow-in-right text-success"></i> Deposit <% } %>
+                  </td>
+
+                  <td>
+                    <%= transaction.pengurus %>
+                  </td>
+                  <td>
+                    <%= transaction.lokasi %>
+                  </td>
+                  <td>
+                    <%= transaction.keterangan || '-' %>
+                  </td>
+                  <td>
+                    <%= transaction.uang_masuk.toLocaleString('id-ID') %>
+                  </td>
+                  <td>
+                    <%= transaction.uang_keluar.toLocaleString('id-ID') %>
+                  </td>
+
+                  <% if (userRole==='admin' || userRole==='superadmin' ) { %>
+                    <td>
+                      <!-- Edit Button -->
+                      <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#uangKasModal"
+                        onclick="editTransaction(<%= transaction.id %>, '<%= transaction.wd_depo %>', '<%= transaction.pengurus %>', '<%= transaction.lokasi %>', '<%= transaction.keterangan %>', <%= transaction.wd_depo === 'Withdraw' ? transaction.uang_keluar : transaction.uang_masuk %>)">
+                        Edit
+                      </button>
+
+                      <!-- Delete Button -->
+                      <form action="/uang-kas/delete/<%= transaction.id %>" method="POST" style="display: inline">
+                        <button type="submit" class="btn btn-danger btn-sm">
+                          <i class="bi bi-trash"></i> Hapus
+                        </button>
+                      </form>
+                    </td>
+                    <% } %>
+                </tr>
+                <% }) %>
+            </tbody>
+          </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Fungsi untuk edit data saat tombol Edit ditekan
+      function editTransaction(
+        id,
+        wd_depo,
+        pengurus,
+        lokasi,
+        keterangan,
+        jumlah
+      ) {
+        document.getElementById("transactionId").value = id;
+        document.getElementById("wd_depo").value = wd_depo;
+        document.getElementById("pengurus").value = pengurus;
+        document.getElementById("lokasi").value = lokasi;
+        document.getElementById("keterangan").value = keterangan || "";
+        document.getElementById("jumlah").value = jumlah;
+      }
+
+      // Event listener untuk reset form saat modal ditutup
+      const modalElement = document.getElementById("uangKasModal");
+      modalElement.addEventListener("hidden.bs.modal", function () {
+        // Reset semua field form
+        document.getElementById("transactionId").value = "";
+        document.getElementById("wd_depo").value = "Deposit";
+        document.getElementById("pengurus").value = "Babeh";
+        document.getElementById("lokasi").value = "";
+        document.getElementById("keterangan").value = "";
+        document.getElementById("jumlah").value = "";
+      });
+
+      // Fungsi konfirmasi sebelum menghapus
+      function confirmDelete() {
+        return confirm("Apakah Anda yakin ingin menghapus data ini?");
+      }
+
+      // Fungsi konfirmasi sebelum mengedit
+      function confirmEdit() {
+        return confirm("Apakah Anda yakin ingin mengedit data ini?");
+      }
+
+      // Menambahkan konfirmasi edit pada tombol Edit di bawah
+      const editButtons = document.querySelectorAll(
+        'button[data-bs-toggle="modal"]'
+      );
+      editButtons.forEach((button) => {
+        button.addEventListener("click", function (event) {
+          if (!confirmEdit()) {
+            event.preventDefault();
+          }
+        });
+      });
+    </script>
+</body>
+
+</html>

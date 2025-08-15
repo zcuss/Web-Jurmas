@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Change Log - Juru Masak</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .card-hover:hover {
+        transform: translateY(-3px);
+        transition: 0.3s ease;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .log-time {
+        font-size: 0.85rem;
+        color: #6c757d;
+      }
+    </style>
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <%- include('-partials/sidebar', { currentRoute: currentRoute }) %>
+
+    <div class="main-content flex-grow-1 p-4" style="margin-left: 250px">
+      <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="h3">📋 Riwayat Perubahan (Changelog)</h1>
+        </div>
+
+        <!-- Tombol Tambah Catatan -->
+        <div class="mb-3 text-end">
+          <button
+            class="btn btn-success"
+            data-bs-toggle="modal"
+            data-bs-target="#addChangelogModal"
+          >
+            <i class="fas fa-plus"></i> Tambah Catatan
+          </button>
+        </div>
+
+        <% if (logs.length > 0) { %> <% logs.forEach(function(log) { %>
+        <div class="card card-hover shadow-sm mb-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-1">
+                <i class="fas fa-clock me-2 text-secondary"></i>
+                <%= new Date(log.createdAt).toLocaleDateString('id-ID') %>
+              </h5>
+
+              <!-- Tombol Edit & Hapus -->
+              <div class="d-flex align-items-center">
+                <button
+                  class="btn btn-sm btn-outline-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editChangelogModal"
+                  data-log-id="<%= log.id %>"
+                  data-log-content="<%= encodeURIComponent(log.log) %>"
+                  onclick="handleEditLog(this)"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+                <form
+                  action="/changelog/delete/<%= log.id %>"
+                  method="POST"
+                  class="ms-2"
+                  onsubmit="return confirm('Yakin ingin menghapus log ini?')"
+                >
+                  <button class="btn btn-sm btn-outline-danger" type="submit">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <hr />
+
+            <% log.log.split('\n').forEach(function(line) { let style = ''; if
+            (line.trim().startsWith('+')) { style = 'color: #1a8232'; } else if
+            (line.trim().startsWith('!')) { style = 'color: #dba400'; } else if
+            (line.trim().startsWith('-')) { style = 'color: #dc3545'; } %>
+            <div class="m-0 p-0" style="<%= style %>">
+              <%= line.replace(/^([+!-])/, '[$1]') %>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+        <% }) %> <% } else { %>
+        <div class="alert alert-info mb-0">
+          <i class="fas fa-info-circle me-2"></i> Belum ada catatan perubahan.
+        </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Modal Tambah -->
+    <div class="modal fade" id="addChangelogModal" tabindex="-1">
+      <div class="modal-dialog">
+        <form action="/changelog/add" method="POST" class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Tambah Catatan Perubahan</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <textarea
+              name="log"
+              class="form-control"
+              rows="5"
+              required
+              placeholder="+ Tambah fitur login\n! Update menu\n- Hapus tombol lama"
+            ></textarea>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" type="submit">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <<!-- Modal Edit -->
+    <div class="modal fade" id="editChangelogModal" tabindex="-1">
+      <div class="modal-dialog">
+        <form method="POST" class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Catatan Perubahan</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Opsional: tetap gunakan ID untuk jaga-jaga -->
+            <input type="hidden" name="id" id="editLogId" />
+            <textarea
+              name="log"
+              id="editLogText"
+              class="form-control"
+              rows="5"
+              required
+            ></textarea>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" type="submit">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      function handleEditLog(button) {
+        const id = button.dataset.logId;
+        const log = decodeURIComponent(button.dataset.logContent);
+
+        // Set value ke input form
+        document.getElementById("editLogId").value = id;
+        document.getElementById("editLogText").value = log;
+
+        // Ganti action form ke /changelog/edit/:id
+        const form = document.querySelector("#editChangelogModal form");
+        form.action = `/changelog/edit/${id}`;
+      }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
