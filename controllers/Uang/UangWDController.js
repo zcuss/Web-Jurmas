@@ -1,7 +1,7 @@
 const { Uang_WD, Uang_Kas, sequelize, Uang_WD_Logs } = require("../../models");
 
 const validAdmins = ["babeh", "naomi", "kay", "roy"];
-const validPenerima = [...validAdmins, "rei", "proy"];
+const validPenerima = [...validAdmins, "rei", "potong"];
 
 // Hitung saldo terakhir berdasarkan log Masuk dan Keluar
 async function getLatestSaldoByNama() {
