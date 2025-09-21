@@ -25,6 +25,8 @@ const UangWDController = require("../controllers/Uang/UangWDController");
 const AuthController = require("../controllers/AuthController");
 const SetoranTaniController = require("../controllers/SetoranTaniController");
 
+const Withdraw2Controller = require("../controllers/Wd/Withdraw2Controller");
+const LogsWD2Controller = require("../controllers/Wd/LogsWD2Controller");
 // ** Routes untuk Otentikasi Discord **
 // Mengarahkan pengguna untuk login melalui Discord
 router.get("/auth/discord", passport.authenticate("discord"));
@@ -47,43 +49,13 @@ router.get("/dashboard", checkLogin, dashboardController.Dashboard); // Halaman 
 router.get("/kalkulator", checkLogin, kalkulatorController.formKalkulator);
 router.post("/kalkulator", checkLogin, kalkulatorController.hitungKalkulasi);
 
-router.get(
-  "/changelog",
-  checkLogin,
-  checkRole(["superadmin"]),
-  ChangelogController.ShowLog
-);
-router.post(
-  "/changelog/add",
-  checkLogin,
-  checkRole(["superadmin"]),
-  ChangelogController.AddLog
-);
-router.post(
-  "/changelog/edit/:id",
-  checkLogin,
-  checkRole(["superadmin"]),
-  ChangelogController.EditLog
-);
-router.post(
-  "/changelog/delete/:id",
-  checkLogin,
-  checkRole(["superadmin"]),
-  ChangelogController.DeleteLog
-);
+router.get("/changelog", checkLogin, checkRole(["superadmin"]), ChangelogController.ShowLog);
+router.post("/changelog/add", checkLogin, checkRole(["superadmin"]), ChangelogController.AddLog);
+router.post("/changelog/edit/:id", checkLogin, checkRole(["superadmin"]), ChangelogController.EditLog);
+router.post("/changelog/delete/:id", checkLogin, checkRole(["superadmin"]), ChangelogController.DeleteLog);
 
-router.get(
-  "/role",
-  checkLogin,
-  checkRole(["superadmin"]),
-  RoleController.ShowRole
-);
-router.post(
-  "/role/update/:id",
-  checkLogin,
-  checkRole(["superadmin"]),
-  RoleController.UpdateRole
-);
+router.get("/role", checkLogin, checkRole(["superadmin"]), RoleController.ShowRole);
+router.post("/role/update/:id", checkLogin, checkRole(["superadmin"]), RoleController.UpdateRole);
 
 router.get("/setoran_tani", checkLogin, SetoranTaniController.SetoranTani);
 router.post("/setoran_tani", SetoranTaniController.tambahSetoran);
@@ -97,37 +69,19 @@ router.get("/api/stock-bahan", BahanController.ApistockBahan); // Menampilkan st
 router.get("/stock-kulkas", checkLogin, KulkasController.stockKulkas); // Menampilkan stok kulkas
 
 // ** Routes untuk Stock-Fix (Hanya untuk Superadmin) **
-router.get(
-  "/stock-fix",
-  checkLogin,
-  checkRole(["superadmin"]),
-  FixController.getStockFix
-);
+router.get("/stock-fix", checkLogin, checkRole(["superadmin"]), FixController.getStockFix);
 router.post("/stock-fix", FixController.postStockFix);
 
 // ** Routes untuk Restock (Untuk Admin dan Superadmin) **
-router.get(
-  "/restock",
-  checkLogin,
-  checkRole(["admin", "superadmin"]),
-  RestockController.restockForm
-);
+router.get("/restock", checkLogin, checkRole(["admin", "superadmin"]), RestockController.restockForm);
 router.post("/restock", RestockController.restock); // Melakukan restock bahan
 
 // ** Routes untuk Withdraw (Untuk Admin dan Superadmin) **
-router.get(
-  "/withdraw",
-  checkLogin,
-  checkRole(["admin", "superadmin"]),
-  WithdrawController.withdrawForm
-);
+router.get("/withdraw", checkLogin, checkRole(["admin", "superadmin"]), WithdrawController.withdrawForm);
 router.post("/withdraw", WithdrawController.withdraw); // Melakukan withdraw
 router.post("/withdraw/mark-as-paid", WithdrawController.markAsPaid); // Tandai withdraw sebagai "Lunas"
 router.post("/withdraw/mark-as-unpaid", WithdrawController.markAsUnpaid); // Tandai withdraw sebagai "Belum Lunas"
-router.post(
-  "/withdraw/delete-by-message-id",
-  WithdrawController.deleteByMessageId
-); // Hapus withdraw berdasarkan ID pesan
+router.post("/withdraw/delete-by-message-id", WithdrawController.deleteByMessageId); // Hapus withdraw berdasarkan ID pesan
 
 // ** Routes untuk Logs **
 router.get("/logs-restock", checkLogin, LogsRestockController.logsRestock); // Menampilkan log restock
@@ -145,6 +99,10 @@ router.get("/uang-wd", checkLogin, UangWDController.showUangWD); // Menampilkan 
 router.post("/setor-uang/:admin", UangWDController.setorUang);
 router.get("/uang-gaji", checkLogin, UangGajiController.showUangGaji); // Menampilkan uang gaji
 router.post("/uang-gaji/:admin", UangGajiController.ambilGaji);
+
+router.get("/Withdraw/WithdrawForm", checkLogin, Withdraw2Controller.withdrawForm);
+router.post("/Withdraw/WithdrawForm", Withdraw2Controller.withdraw); // Melakukan withdraw
+router.get("/logs-wd/user", checkLogin, LogsWD2Controller.logsWD); // Menampilkan log withdraw
 
 router.get("/logout", (req, res) => {
   req.session.destroy((err) => {

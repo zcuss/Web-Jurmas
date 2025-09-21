@@ -1,63 +1,61 @@
 /* Sidebar Styling */
 /* /public/css/sidebar.css */
 .sidebar {
-    width: 200px;
-    height: 100vh;
-    overflow-y: auto;
-    z-index: 1000;
-  }
-  
-  .sidebar .nav-link {
-    color: #ddd;
-    transition: background 0.2s, color 0.2s;
-  }
-  
-  .sidebar .nav-link:hover {
-    background-color: #495057;
-    color: #fff;
-  }
-  
-  .sidebar .nav-link.active {
-    background-color: #198754;
-    color: white;
-  }
-  
-  .sidebar .category-title {
-    font-size: 0.85rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.25rem;
-    color: #aaa;
-  }
-  
-  
-  .sidebar .nav-link i {
-    margin-right: 10px;
-    font-size: 18px;
-    opacity: 0.85;
-    transition: opacity 0.3s;
-  }
-  
-  .sidebar .nav-link:hover i {
-    opacity: 1;
-  }
-  
-  .sidebar .sidebar-title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    background-color: #2b3035;
-    color: #fff;
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid #444;
-  }
-  
-  .sidebar hr {
-    border-color: rgba(255,255,255,0.1);
-    margin: 0.5rem 1rem;
-  }
-  
-  
-  /* Main content area */
-  .main-content {
-    margin-left: 220px;
-    padding: 20px;
-  }
+  width: 200px;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.sidebar .nav-link {
+  color: #ddd;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar .nav-link:hover {
+  background-color: #495057;
+  color: #fff;
+}
+
+.sidebar .nav-link.active {
+  background-color: #198754;
+  color: white;
+}
+
+.sidebar .category-title {
+  font-size: 0.85rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.25rem;
+  color: #aaa;
+}
+
+.sidebar .nav-link i {
+  margin-right: 10px;
+  font-size: 18px;
+  opacity: 0.85;
+  transition: opacity 0.3s;
+}
+
+.sidebar .nav-link:hover i {
+  opacity: 1;
+}
+
+.sidebar .sidebar-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: #2b3035;
+  color: #fff;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #444;
+}
+
+.sidebar hr {
+  border-color: rgba(255, 255, 255, 0.1);
+  margin: 0.5rem 1rem;
+}
+
+/* Main content area */
+.main-content {
+  margin-left: 220px;
+  padding: 20px;
+}

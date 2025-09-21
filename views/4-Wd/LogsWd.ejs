@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Logs Withdrawal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+      table {
+        width: 100%;
+        table-layout: auto;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        font-size: 13px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        padding: 12px 14px;
+        border: 1px solid #ddd;
+        text-align: left;
+        vertical-align: middle;
+        white-space: nowrap;
+        overflow: visible;
+        word-break: normal;
+      }
+
+      th {
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+        font-size: 15px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+
+      .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .main-content {
+        margin: 0 20px;
+      }
+
+      .status-group {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .btn-sm {
+        padding: 2px 5px;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+
+  <%- include('../-partials/sidebar', { currentRoute: currentRoute }) %>
+
+  <body>
+    <div class="main-content container mt-4">
+      <h1 class="mb-4 text-center text-success">📦 Log WD</h1>
+
+      <% const isDataKosong = !LogWDUser || !Array.isArray(LogWDUser) || LogWDUser.length === 0 || LogWDUser.every(item => !item ||
+      Object.keys(item).length === 0); %> <% const reversedLogs = LogWDUser ? LogWDUser.reverse() : []; %> <% if (isDataKosong) { %>
+      <p class="text-center text-warning">Data tidak ditemukan.</p>
+      <% } else { %>
+      <div>
+        <table class="table table-bordered">
+          <thead class="table-success">
+            <tr>
+              <th>ID</th>
+              <th>Tanggal</th>
+              <th>Jam</th>
+              <th>Nama</th>
+              <th>Makanan</th>
+              <th>Cerutu</th>
+              <th>Korek</th>
+              <th>Tuak</th>
+              <th>Radio</th>
+              <th>Micin</th>
+              <th>Jamur</th>
+              <th>Total Harga</th>
+              <th>Withdraw By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% reversedLogs.forEach(function(log) { %>
+            <!-- Loop melalui reversedLogs -->
+            <% if (log && Object.keys(log).length > 0) { %>
+            <tr>
+              <td><%= log.id %></td>
+              <td><%= log.tanggal %></td>
+              <td><%= log.jam %></td>
+              <td><%= log.nama %></td>
+              <td><%= log.makanan %></td>
+              <td><%= log.cerutu %></td>
+              <td><%= log.korek %></td>
+              <td><%= log.tuak %></td>
+              <td><%= log.radio %></td>
+              <td><%= log.micin %></td>
+              <td><%= log.jamur %></td>
+              <td><%= log.total_harga.toLocaleString('id-ID') %></td>
+              <td><%= log.withdraw_by %></td>
+            </tr>
+            <% } %> <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+    </div>
+  </body>
+  <script>
+    // Fungsi untuk tombol "Lunas" dan "Clear"
+    function updateStatus(id, keterangan, status) {
+      console.log(`Mengupdate ID: ${id}, Keterangan: ${keterangan}, Status: ${status}`);
+      fetch(`/LogWDUser/updateStatus/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ keterangan, status }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            window.location.reload(); // Reload halaman setelah update berhasil
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+
+    // Fungsi untuk menghapus log
+    function deleteLog(id) {
+      if (confirm("Apakah Anda yakin ingin menghapus log ini?")) {
+        fetch(`/LogWDUser/delete/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              window.location.reload(); // Reload halaman setelah data dihapus
+            } else {
+              alert("Gagal menghapus log.");
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</html>

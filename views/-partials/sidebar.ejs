@@ -7,160 +7,100 @@
   <!-- Sidebar -->
   <div id="sidebar" class="sidebar bg-dark text-white position-fixed">
     <div class="sidebar-title d-flex align-items-center px-3 py-3 border-bottom border-secondary">
-        <i class="fas fa-clipboard-list me-2"></i>
-        <span class="fs-5 fw-semibold">JURU MASAK</span>
+      <i class="fas fa-clipboard-list me-2"></i>
+      <span class="fs-5 fw-semibold">JURU MASAK</span>
     </div>
 
+    <%
+      // ========================
+      // Role Hierarchy
+      // ========================
+      const roleHierarchy = {
+        user: ["user"],
+        mod: ["user", "mod"],
+        admin: ["user", "mod", "admin"],
+        superadmin: ["user", "mod", "admin", "superadmin"] // <- tambah "mod"
+      };
+
+
+      const userRoles = roleHierarchy[user?.role] || [];
+
+      // ========================
+      // Helper Function
+      // ========================
+      function canAccess(item) {
+        if (process.env.DEBUG_MODE === "true") return true; // bypass untuk debug
+        if (!item.roles) return true; // default: semua user boleh
+        return item.roles.some(r => userRoles.includes(r));
+      }
+
+      // ========================
+      // Menu Definition
+      // (tulis role minimum aja)
+      // ========================
+      const menu = [
+        { href: "/dashboard", route: "dashboard", icon: "fa-file-alt", label: "Dashboard" },
+        { href: "/kalkulator", route: "kalkulator", icon: "fa-tags", label: "Kalkulator" },
+        { href: "/Withdraw/WithdrawForm", route: "WithdrawForm", icon: "fa-newspaper", label: "WD Form" },
+
+        { type: "divider", roles: ["superadmin"] },
+        { href: "/changelog", route: "changelog", icon: "fa-history", label: "Change Log", roles: ["superadmin"] },
+        { href: "/role", route: "role", icon: "fa-hammer", label: "Role", roles: ["superadmin"] },
+        
+        { type: "divider", roles: ["admin"] },
+        { type: "category", icon: "fa-box", label: "Barang", roles: ["admin"] },
+        { href: "/harga-bahan", route: "harga-bahan", icon: "fa-tags", label: "Harga Bahan", roles: ["admin"] },
+        { href: "/stock-bahan", route: "stock-bahan", icon: "fa-home", label: "Stock Bahan", roles: ["mod"] },
+        { href: "/stock-kulkas", route: "stock-kulkas", icon: "fa-snowflake", label: "Stok Kulkas", roles: ["mod"] },
+        { href: "/stock-fix", route: "stock-fix", icon: "fa-warehouse", label: "Stock Fix", roles: ["superadmin"] },
+        { href: "/restock", route: "restock", icon: "fa-rotate-right", label: "Restock", roles: ["admin"] },
+        { href: "/withdraw", route: "withdraw", icon: "fa-box-open", label: "WD (Admin)", roles: ["admin"] },
+
+        { type: "divider", roles: ["mod"] },
+        { type: "category", icon: "fa-money-bill-wave", label: "Uang", roles: ["mod"] },
+        { href: "/uang-wd", route: "uang-wd", icon: "fa-money-bill-wave", label: "Uang WD", roles: ["mod"] },
+        { href: "/uang-kas", route: "uang-kas", icon: "fa-coins", label: "Uang Kas", roles: ["mod"] },
+        { href: "/uang-gaji", route: "uang-gaji", icon: "fa-user-tie", label: "Uang Gaji", roles: ["mod"] },
+
+        { type: "divider", roles: ["user"] },
+        { type: "category", icon: "fa-clock", label: "Logs", roles: ["user"] },
+        { href: "/logs-restock", route: "logs-restock", icon: "fa-file-alt", label: "Logs Restock", roles: ["mod"] },
+        { href: "/logs-bahan", route: "logs-bahan", icon: "fa-file-alt", label: "Logs Bahan", roles: ["mod"]  }, // user boleh
+        { href: "/logs-wd", route: "logs-wd", icon: "fa-file-alt", label: "Logs WD +", roles: ["mod"] },         // user boleh
+        { href: "/logs-wd/user", route: "LogsWdUser", icon: "fa-file-alt", label: "Logs WD", roles: ["user"] },         // user boleh
+        { type: "divider" },
+
+        { href: "/setoran_tani", route: "setoran-tani", icon: "fa-tractor", label: "Setoran Tani" },
+        { type: "divider" },
+        { href: "/logout", route: "logout", icon: "fa-sign-out-alt", label: "Logout" }
+      ];
+    %>
+
+    <!-- ========================
+         Sidebar Render
+         ======================== -->
     <ul class="nav flex-column mt-3 px-2">
-        <!-- Dashboard -->
-        <li class="nav-item">
-            <a href="/dashboard"
-              class="nav-link px-3 py-2 rounded <%= currentRoute === 'dashboard' ? 'active fw-bold' : '' %>"
-              <%= currentRoute === 'dashboard' ? 'aria-current="page"' : '' %>>
-                <i class="fas fa-file-alt me-2"></i>
-                <span>Dashboard</span>
+      <% menu.forEach(item => { 
+          if (!canAccess(item)) return;
+      %>
+        <% if (item.type === "divider") { %>
+          <hr class="my-2 border-secondary">
+        <% } else if (item.type === "category") { %>
+          <li class="category-title">
+            <i class="fas <%= item.icon %> me-2"></i><%= item.label %>
+          </li>
+        <% } else { %>
+          <li class="nav-item">
+            <a href="<%= item.href %>" 
+              class="nav-link px-3 py-2 rounded <%= currentRoute === item.route ? 'active fw-bold' : '' %>"
+              <%= currentRoute === item.route ? 'aria-current="page"' : '' %>>
+              <i class="fas <%= item.icon %> me-2"></i><%= item.label %>
             </a>
-        </li>
-        <li class="nav-item">
-          <a href="/kalkulator"
-            class="nav-link px-3 py-2 rounded <%= currentRoute === 'kalkulator' ? 'active fw-bold' : '' %>">
-              <i class="fas fa-tags me-2"></i>Kalkulator
-          </a>
-        </li>
-
-        <hr class="my-2 border-secondary">
-        <% if (user && (user.role === 'superadmin') || process.env.DEBUG_MODE === 'true') { %>
-        <li class="nav-item">
-          <a href="/changelog"
-            class="nav-link px-3 py-2 rounded <%= currentRoute === 'changelog' ? 'active fw-bold' : '' %>">
-              <i class="fas fa-history me-2"></i>Change Log
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="/role"
-            class="nav-link px-3 py-2 rounded <%= currentRoute === 'role' ? 'active fw-bold' : '' %>">
-              <i class="fas fa-hammer me-2"></i>Role
-          </a>
-        </li>
-        <hr class="my-2 border-secondary">
+          </li>
         <% } %>
-        
-        <!-- Barang -->
-        <li class="category-title"><i class="fas fa-box me-2"></i>Barang</li>
-        
-        <li class="nav-item">
-            <a href="/harga-bahan"
-              class="nav-link px-3 py-2 rounded <%= currentRoute === 'harga-bahan' ? 'active fw-bold' : '' %>">
-                <i class="fas fa-tags me-2"></i>Harga Bahan
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/stock-bahan"
-              class="nav-link px-3 py-2 rounded <%= currentRoute === 'stock-bahan' ? 'active fw-bold' : '' %>">
-                <i class="fas fa-home me-2"></i>Stock Bahan
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/stock-kulkas"
-              class="nav-link px-3 py-2 rounded <%= currentRoute === 'stock-kulkas' ? 'active fw-bold' : '' %>">
-                <i class="fas fa-snowflake me-2"></i>Stok Kulkas
-            </a>
-        </li>
-
-        <!-- Admin & Owner visible in debug mode or for users with admin/owner role -->
-        <% if (user && (user.role === 'superadmin') || process.env.DEBUG_MODE === 'true') { %>
-            <li class="nav-item">
-                <a href="/stock-fix"
-                  class="nav-link px-3 py-2 rounded <%= currentRoute === 'stock-fix' ? 'active fw-bold' : '' %>">
-                    <i class="fas fa-warehouse me-2"></i>Stock Fix
-                </a>
-            </li>
-        <% } %>
-
-        <!-- Admin & Owner visible in debug mode or for users with admin/owner role -->
-        <% if (user && (user.role === 'admin' || user.role === 'superadmin') || process.env.DEBUG_MODE === 'true') { %>
-            <li class="nav-item">
-                <a href="/restock"
-                  class="nav-link px-3 py-2 rounded <%= currentRoute === 'restock' ? 'active fw-bold' : '' %>">
-                    <i class="fas fa-rotate-right me-2"></i>Restock
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/withdraw"
-                  class="nav-link px-3 py-2 rounded <%= currentRoute === 'withdraw' ? 'active fw-bold' : '' %>">
-                    <i class="fas fa-box-open me-2"></i>Withdraw
-                </a>
-            </li>
-        <% } %>
-
-        <hr class="my-2 border-secondary">
-
-        
-            <li class="category-title"><i class="fas fa-money-bill-wave me-2"></i>Uang</li>
-
-            <li class="nav-item">
-                <a href="/uang-wd"
-                  class="nav-link px-3 py-2 rounded <%= currentRoute === 'uang-wd' ? 'active fw-bold' : '' %>">
-                    <i class="fas fa-money-bill-wave me-2"></i>Uang WD
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/uang-kas"
-                  class="nav-link px-3 py-2 rounded <%= currentRoute === 'uang-kas' ? 'active fw-bold' : '' %>">
-                    <i class="fas fa-coins me-2"></i>Uang Kas
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/uang-gaji"
-                  class="nav-link px-3 py-2 rounded <%= currentRoute === 'uang-gaji' ? 'active fw-bold' : '' %>">
-                    <i class="fas fa-user-tie me-2"></i>Uang Gaji
-                </a>
-            </li>
-
-            <hr class="my-2 border-secondary">
-
-            <!-- Logs -->
-            <li class="category-title"><i class="fas fa-clock me-2"></i>Logs</li>
-            <li class="nav-item">
-                <a href="/logs-restock"
-                  class="nav-link px-3 py-2 rounded <%= currentRoute === 'logs-restock' ? 'active fw-bold' : '' %>">
-                    <i class="fas fa-file-alt me-2"></i>Logs Restock
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/logs-bahan"
-                  class="nav-link px-3 py-2 rounded <%= currentRoute === 'logs-bahan' ? 'active fw-bold' : '' %>">
-                    <i class="fas fa-file-alt me-2"></i>Logs Bahan
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/logs-wd"
-                  class="nav-link px-3 py-2 rounded <%= currentRoute === 'logs-wd' ? 'active fw-bold' : '' %>">
-                    <i class="fas fa-file-alt me-2"></i>Logs WD
-                </a>
-            </li>
-
-            <hr class="my-2 border-secondary">
-                
-            <li class="nav-item">
-              <a href="/setoran_tani"
-                class="nav-link px-3 py-2 rounded <%= currentRoute === 'setoran-tani' ? 'active fw-bold' : '' %>">
-                  <i class="fas fa-tractor me-2"></i>Setoran Tani
-              </a>
-            </li>
-            <hr class="my-2 border-secondary">
-
-            <!-- Logout -->
-            <li class="nav-item">
-                <a href="/logout"
-                  class="nav-link px-3 py-2 rounded">
-                    <i class="fas fa-sign-out-alt me-2"></i>Logout
-                </a>
-            </li>
-          
+      <% }) %>
     </ul>
   </div>
-
 
   <!-- Main Content -->
   <div class="main-content ms-auto p-4" style="margin-left: 250px;">

@@ -3,16 +3,11 @@ const { Sequelize, DataTypes, Model } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 
 // 🔗 Koneksi Database
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASS,
-  {
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT || "mysql",
-    logging: false,
-  }
-);
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
+  host: process.env.DB_HOST,
+  dialect: process.env.DB_DIALECT || "mysql",
+  logging: false,
+});
 
 // =============================================================
 // 🔹 MODEL: User
@@ -312,6 +307,52 @@ const Users = sequelize.define(
 );
 
 // =============================================================
+// 🔹 MODEL: LogWDUser
+// =============================================================
+const LogWDUser = sequelize.define(
+  "LogWDUser",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    tanggal: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+      defaultValue: Sequelize.literal("CURRENT_DATE()"),
+    },
+    jam: {
+      type: DataTypes.TIME,
+      allowNull: false,
+      defaultValue: Sequelize.literal("CURRENT_TIME()"),
+    },
+    nama: { type: DataTypes.STRING(100), allowNull: false },
+    makanan: DataTypes.INTEGER,
+    cerutu: DataTypes.INTEGER,
+    korek: DataTypes.INTEGER,
+    tuak: DataTypes.INTEGER,
+    radio: DataTypes.INTEGER,
+    micin: DataTypes.INTEGER,
+    jamur: DataTypes.INTEGER,
+    total_harga: DataTypes.INTEGER,
+    withdraw_by: DataTypes.STRING(100),
+    keterangan: {
+      type: DataTypes.ENUM("LUNAS", "BELUM LUNAS"),
+      defaultValue: "BELUM LUNAS",
+    },
+    status: {
+      type: DataTypes.ENUM("CLEAR", "PENDING"),
+      defaultValue: "PENDING",
+    },
+    gaji: { type: DataTypes.ENUM("CLEAR", "PENDING"), defaultValue: "PENDING" },
+    message_id: DataTypes.STRING,
+    wdBatchId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+    },
+  },
+  { tableName: "LogWDUser", timestamps: false }
+);
+
+// =============================================================
 // 🔹 MODEL: ChangeLog
 // =============================================================
 const ChangeLog = sequelize.define(
@@ -360,4 +401,5 @@ module.exports = {
   Uang_Gaji_Logs,
   setoran_tani,
   ChangeLog,
+  LogWDUser,
 };
