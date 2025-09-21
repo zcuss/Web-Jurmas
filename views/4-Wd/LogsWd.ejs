@@ -91,6 +91,10 @@
               <th>Jamur</th>
               <th>Total Harga</th>
               <th>Withdraw By</th>
+              <% if (userRole === 'admin' || userRole === 'superadmin') { %>
+              <!-- Kolom Aksi hanya untuk Admin -->
+              <th>Aksi</th>
+              <% } %>
             </tr>
           </thead>
           <tbody>
@@ -111,6 +115,14 @@
               <td><%= log.jamur %></td>
               <td><%= log.total_harga.toLocaleString('id-ID') %></td>
               <td><%= log.withdraw_by %></td>
+
+              <% if (userRole === 'admin' || userRole === 'superadmin') { %>
+              <!-- Tombol Aksi hanya muncul untuk Admin -->
+              <td class="status-group">
+                <!-- Tombol Hapus -->
+                <button class="btn btn-danger btn-sm" onclick="deleteLog('<%= log.id %>')">Hapus</button>
+              </td>
+              <% } %>
             </tr>
             <% } %> <% }); %>
           </tbody>
@@ -120,29 +132,10 @@
     </div>
   </body>
   <script>
-    // Fungsi untuk tombol "Lunas" dan "Clear"
-    function updateStatus(id, keterangan, status) {
-      console.log(`Mengupdate ID: ${id}, Keterangan: ${keterangan}, Status: ${status}`);
-      fetch(`/LogWDUser/updateStatus/${id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ keterangan, status }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            window.location.reload(); // Reload halaman setelah update berhasil
-          }
-        })
-        .catch((error) => console.error("Error:", error));
-    }
-
     // Fungsi untuk menghapus log
     function deleteLog(id) {
       if (confirm("Apakah Anda yakin ingin menghapus log ini?")) {
-        fetch(`/LogWDUser/delete/${id}`, {
+        fetch(`/logwd/user/delete/${id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",

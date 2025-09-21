@@ -103,6 +103,7 @@ router.post("/uang-gaji/:admin", UangGajiController.ambilGaji);
 router.get("/Withdraw/WithdrawForm", checkLogin, Withdraw2Controller.withdrawForm);
 router.post("/Withdraw/WithdrawForm", Withdraw2Controller.withdraw); // Melakukan withdraw
 router.get("/logs-wd/user", checkLogin, LogsWD2Controller.logsWD); // Menampilkan log withdraw
+router.delete("/logwd/user/delete/:id", LogsWD2Controller.deleteLog); // Menghapus log withdraw
 
 router.get("/logout", (req, res) => {
   req.session.destroy((err) => {

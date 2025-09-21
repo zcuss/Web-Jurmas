@@ -69,13 +69,13 @@ exports.deleteLog = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const LogWDUser = await LogWDUser.findByPk(id);
-    if (!LogWDUser) {
-      return res.status(404).json({ success: false, message: "LogWDUser tidak ditemukan" });
+    const logWDUser = await LogWDUser.findByPk(id);
+    if (!logWDUser) {
+      return res.status(404).json({ success: false, message: "Log WD User tidak ditemukan" });
     }
 
-    await LogWDUser.destroy();
-    console.log(`Log dengan ID ${id} berhasil dihapus.`);
+    await logWDUser.destroy();
+    console.log(`Log WD User dengan ID ${id} berhasil dihapus.`);
     res.json({ success: true });
   } catch (error) {
     handleError(res, error, "Terjadi kesalahan saat menghapus log.");
