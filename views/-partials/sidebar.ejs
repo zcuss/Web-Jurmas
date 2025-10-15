@@ -40,15 +40,15 @@
       // ========================
       const menu = [
         { href: "/dashboard", route: "dashboard", icon: "fa-file-alt", label: "Dashboard" },
-        { href: "/kalkulator", route: "kalkulator", icon: "fa-tags", label: "Kalkulator", roles: ["superadmin"] },
+        { href: "/kalkulator", route: "kalkulator", icon: "fa-tags", label: "Kalkulator", roles: ["mod"] },
         { href: "/Withdraw/WithdrawForm", route: "WithdrawForm", icon: "fa-newspaper", label: "WD Form" },
 
         { type: "divider", roles: ["superadmin"] },
         { href: "/changelog", route: "changelog", icon: "fa-history", label: "Change Log", roles: ["superadmin"] },
         { href: "/role", route: "role", icon: "fa-hammer", label: "Role", roles: ["superadmin"] },
         
-        { type: "divider", roles: ["admin"] },
-        { type: "category", icon: "fa-box", label: "Barang", roles: ["admin"] },
+        { type: "divider", roles: ["mod"] },
+        { type: "category", icon: "fa-box", label: "Barang", roles: ["mod"] },
         { href: "/harga-bahan", route: "harga-bahan", icon: "fa-tags", label: "Harga Bahan", roles: ["admin"] },
         { href: "/stock-bahan", route: "stock-bahan", icon: "fa-home", label: "Stock Bahan", roles: ["mod"] },
         { href: "/stock-kulkas", route: "stock-kulkas", icon: "fa-snowflake", label: "Stok Kulkas", roles: ["mod"] },

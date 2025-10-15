@@ -1,29 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Withdraw Barang</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+      .item-cell {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Withdraw Barang</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <style>
-    .item-cell {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+      .remove-btn {
+        margin-left: 10px;
+        color: red;
+        cursor: pointer;
+      }
+    </style>
+  </head>
 
-    .remove-btn {
-      margin-left: 10px;
-      color: red;
-      cursor: pointer;
-    }
-  </style>
-</head>
-
-<body>
-  <%- include('../-partials/sidebar', { currentRoute: currentRoute }) %>
+  <body>
+    <%- include('../-partials/sidebar', { currentRoute: currentRoute }) %>
     <div class="main-content container mt-4">
       <h1 class="mb-4 text-center text-success">📦 Withdraw Barang</h1>
 
@@ -48,9 +47,7 @@
         </div>
         <div class="col-md-2 mb-3">
           <label class="form-label d-block">&nbsp;</label>
-          <button onclick="addItem()" class="btn btn-primary w-100">
-            ➕ Tambah
-          </button>
+          <button onclick="addItem()" class="btn btn-primary w-100">➕ Tambah</button>
         </div>
       </div>
 
@@ -77,7 +74,7 @@
           <option value="Babeh Jali">Babeh</option>
           <option value="Naomi Lazovsky Haegen">Naomi</option>
           <option value="KAY S HAWKINS">Kay</option>
-          <option value="Roy Suryajana">Roy</option>
+          <option value="Roy M HAWKINS">Roy</option>
         </select>
       </div>
 
@@ -86,7 +83,8 @@
 
       <div class="text-center mt-3">
         <button onclick="submitWithdraw()" class="btn btn-success btn-lg w-100">
-          <i class="fas fa-cogs"></i> Withdraw Barang
+          <i class="fas fa-cogs"></i>
+          Withdraw Barang
         </button>
       </div>
     </div>
@@ -104,14 +102,10 @@
         }
 
         // Cek apakah item sudah ada di list
-        const existingRow = Array.from(itemList.children).find(
-          (row) => row.dataset.item === item
-        );
+        const existingRow = Array.from(itemList.children).find((row) => row.dataset.item === item);
 
         if (existingRow) {
-          alert(
-            `Item "${item}" sudah ada di list. Hapus terlebih dahulu jika ingin mengubah.`
-          );
+          alert(`Item "${item}" sudah ada di list. Hapus terlebih dahulu jika ingin mengubah.`);
           return;
         }
 
@@ -147,13 +141,11 @@
         }
 
         // Ambil semua barang dari tabel
-        const withdrawItems = Array.from(itemList.querySelectorAll("tr")).map(
-          (row) => {
-            const name = row.children[0].innerText;
-            const quantity = parseInt(row.querySelector(".qty").innerText);
-            return { name, quantity };
-          }
-        );
+        const withdrawItems = Array.from(itemList.querySelectorAll("tr")).map((row) => {
+          const name = row.children[0].innerText;
+          const quantity = parseInt(row.querySelector(".qty").innerText);
+          return { name, quantity };
+        });
 
         if (withdrawItems.length === 0) {
           alert("Tambahkan minimal 1 barang!");
@@ -187,6 +179,5 @@
         }
       }
     </script>
-</body>
-
+  </body>
 </html>

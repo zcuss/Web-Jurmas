@@ -1,24 +1,27 @@
 {
   "withdrawalAmounts": {
     "makanan": [
-      { "name": "Lemak", "amount": 1840 },
-      { "name": "Cengkeh", "amount": 216 },
-      { "name": "Buah Buahan", "amount": 200 },
-      { "name": "Ayam", "amount": 180 },
-      { "name": "Daging", "amount": 160 },
-      { "name": "Akar", "amount": 120 },
-      { "name": "Garam", "amount": 88 },
-      { "name": "Akua", "amount": 88 },
-      { "name": "Gula", "amount": 88 },
-      { "name": "Susu", "amount": 76 },
-      { "name": "Sambal", "amount": 68 },
-      { "name": "Ikan", "amount": 60 },
-      { "name": "Telur", "amount": 60 },
-      { "name": "Teh Celup", "amount": 48 },
-      { "name": "Bambu", "amount": 40 },
+      { "name": "Lemak", "amount": 280 },
+      { "name": "Garam", "amount": 84 },
+      { "name": "Ikan", "amount": 596 },
+      { "name": "Ayam Potong", "amount": 80 },
+      { "name": "Cengkeh", "amount": 180 },
+      { "name": "Susu", "amount": 84 },
       { "name": "Zat Kimia", "amount": 40 },
-      { "name": "Daun", "amount": 20 },
-      { "name": "Beras", "amount": 20 }
+      { "name": "Telur", "amount": 52 },
+      { "name": "Sambal", "amount": 64 },
+      { "name": "Buah Buahan", "amount": 192 },
+      { "name": "Akua", "amount": 88 },
+      { "name": "Teh Celup", "amount": 48 },
+      { "name": "Daun", "amount": 40 },
+      { "name": "Bambu", "amount": 36 },
+      { "name": "Beras", "amount": 20 },
+      { "name": "Daging", "amount": 140 },
+      { "name": "Gula", "amount": 88 },
+      { "name": "Plastik", "amount": 44 },
+      { "name": "Glass", "amount": 28 },
+      { "name": "Besi", "amount": 44 },
+      { "name": "Akar", "amount": 120 }
     ],
 
     "cerutu": [
@@ -26,7 +29,7 @@
       { "name": "Micin", "amount": 2 },
       { "name": "Kecubung", "amount": 2 },
       { "name": "Daun", "amount": 5 },
-      { "name": "Tembakau", "amount": 10 }, 
+      { "name": "Tembakau", "amount": 10 },
       { "name": "Buah buahan", "amount": 5 },
       { "name": "Ranting", "amount": 5 }
     ],

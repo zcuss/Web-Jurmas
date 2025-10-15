@@ -1,14 +1,14 @@
 {
-  "makanan": 1350000,
-  "cerutu": 12000,
-  "korek": 9000,
-  "tuak": 20000,
+  "makanan": 1300000,
+  "cerutu": 50000,
+  "korek": 15000,
+  "tuak": 35000,
   "radio": 10000,
   "micin": 10000,
-  "jamur": 18000,
+  "jamur": 75000,
 
   "gaji": {
-    "babeh": 50000,
+    "babeh": 75000,
     "naomi": 25000,
     "kay": 25000,
     "roy": 25000
